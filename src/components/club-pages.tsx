@@ -160,27 +160,33 @@ export function HomePage() {
       <ClubStats variant="home" />
       <section className="welcome-section page-width" id="welcome" data-scroll-reveal>
         <SectionLineArt />
-        <div className="welcome-heading">
-          <p className="eyebrow">THE HEART OF GUNTUR'S SOCIAL COMMUNITY</p>
-          <h2>
-            More than a club.
-            <br />
-            <em>A place to belong.</em>
-          </h2>
+        <div className="welcome-image" data-scroll-image>
+          <img src={photos.club} alt="Guntur Club heritage campus" loading="lazy" />
+          <span className="welcome-image-caption">Guntur Club · Since 1929</span>
         </div>
-        <div className="welcome-copy">
-          <p>
-            For nearly a century, Guntur Club has brought people together through a shared
-            appreciation for tradition, recreation and the finer things in life.
-          </p>
-          <p>
-            From our beginnings as the famed English Club to a vibrant community of over 1,700
-            members, our legacy lives on in every connection.
-          </p>
-          <Link to="/heritage" className="text-link">
-            Explore our heritage
-            <ArrowUpRight size={17} />
-          </Link>
+        <div className="welcome-content">
+          <div className="welcome-heading">
+            <p className="eyebrow">THE HEART OF GUNTUR'S SOCIAL COMMUNITY</p>
+            <h2>
+              More than a club.
+              <br />
+              <em>A place to belong.</em>
+            </h2>
+          </div>
+          <div className="welcome-copy">
+            <p>
+              For nearly a century, Guntur Club has brought people together through a shared
+              appreciation for tradition, recreation and the finer things in life.
+            </p>
+            <p>
+              From our beginnings as the famed English Club to a vibrant community of over 1,700
+              members, our legacy lives on in every connection.
+            </p>
+            <Link to="/heritage" className="text-link">
+              Explore our heritage
+              <ArrowUpRight size={17} />
+            </Link>
+          </div>
         </div>
       </section>
       <section className="experiences-section" data-scroll-reveal>
@@ -370,23 +376,29 @@ export function HeritagePage() {
       />
       <ClubStats variant="about" />
       <section className="welcome-section page-width" aria-labelledby="about-heading">
-        <div className="welcome-heading">
-          <p className="eyebrow">ABOUT US</p>
-          <h2 id="about-heading">
-            More than a club.
-            <br />
-            <em>A place to belong.</em>
-          </h2>
+        <div className="welcome-image" data-scroll-image>
+          <img src={photos.aerial} alt="Aerial view of the Guntur Club campus" loading="lazy" />
+          <span className="welcome-image-caption">A campus with character</span>
         </div>
-        <div className="welcome-copy">
-          <p>
-            Guntur Club is a community built around fellowship, recreation and warm hospitality. Set
-            across a three-acre campus, the club brings together over 1,700 distinguished members.
-          </p>
-          <p>
-            From sports and fitness to dining, family gatherings and celebrations, our spaces bring
-            generations together through shared interests and lasting connections.
-          </p>
+        <div className="welcome-content">
+          <div className="welcome-heading">
+            <p className="eyebrow">ABOUT US</p>
+            <h2 id="about-heading">
+              More than a club.
+              <br />
+              <em>A place to belong.</em>
+            </h2>
+          </div>
+          <div className="welcome-copy">
+            <p>
+              Guntur Club is a community built around fellowship, recreation and warm hospitality. Set
+              across a three-acre campus, the club brings together over 1,700 distinguished members.
+            </p>
+            <p>
+              From sports and fitness to dining, family gatherings and celebrations, our spaces bring
+              generations together through shared interests and lasting connections.
+            </p>
+          </div>
         </div>
       </section>
       <section className="heritage-history" aria-labelledby="history-heading">
