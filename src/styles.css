@@ -490,6 +490,23 @@ button:hover {
   animation: hero-image-reveal 18000ms cubic-bezier(0.2, 0.75, 0.2, 1) 100ms both;
   will-change: transform, opacity;
 }
+.hero-slides {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+}
+.hero-slide-image {
+  animation: none;
+  opacity: 0;
+  transform: translate3d(0, var(--hero-parallax), 0) scale(1.04);
+  transition: opacity 1200ms ease, transform 9000ms cubic-bezier(0.2, 0.75, 0.2, 1), filter 1200ms ease;
+}
+.hero-slide-image.is-active {
+  opacity: 1;
+  transform: translate3d(0, var(--hero-parallax), 0) scale(1.02);
+  filter: saturate(0.92) blur(0);
+}
 .hero-shade {
   background: var(--hero-overlay);
   z-index: -1;
@@ -633,6 +650,37 @@ button:hover {
   color: var(--foreground);
   transform: translateY(-3px);
 }
+.hero-carousel-controls {
+  position: absolute;
+  right: 44px;
+  bottom: 72px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--hero-ink);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+}
+.hero-carousel-controls button {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--hero-ink) 60%, transparent);
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: background-color 300ms ease, color 300ms ease, border-color 300ms ease, transform 300ms ease;
+}
+.hero-carousel-controls button:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--foreground);
+  transform: translateY(-2px);
+}
 
 @keyframes hero-image-reveal {
   from {
@@ -690,6 +738,9 @@ button:hover {
   }
   .hero-shade {
     opacity: 1;
+  }
+  .hero-slide-image {
+    transition: none;
   }
 }
 .legacy-stats {
@@ -840,8 +891,136 @@ button:hover {
   padding-bottom: 6px;
 }
 .experiences-section {
-  background: var(--muted);
-  padding: 62px 0 68px;
+  background: var(--primary);
+  color: var(--hero-ink);
+  padding: 82px 0 90px;
+  overflow: hidden;
+}
+.amenities-editorial {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.72fr) minmax(520px, 1.28fr);
+  align-items: center;
+  gap: clamp(50px, 7vw, 110px);
+}
+.amenities-editorial-copy {
+  padding: 24px 0 24px;
+}
+.amenities-editorial-copy .eyebrow {
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+.amenities-editorial-copy h2 {
+  color: var(--hero-ink);
+  font-size: clamp(44px, 5vw, 68px);
+  line-height: 1.02;
+}
+.amenities-editorial-copy h2 em {
+  color: var(--gold);
+  font-style: italic;
+}
+.amenities-editorial-description {
+  max-width: 390px;
+  margin-top: 28px;
+  color: color-mix(in srgb, var(--hero-ink) 70%, transparent);
+  font-size: 14px;
+  line-height: 1.9;
+}
+.amenities-icon-rail {
+  display: flex;
+  gap: 18px;
+  margin-top: 42px;
+}
+.amenities-icon-rail span {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border: 1px solid color-mix(in srgb, var(--hero-ink) 55%, transparent);
+  border-radius: 50%;
+  color: var(--hero-ink);
+  transition: color 300ms ease, background-color 300ms ease, border-color 300ms ease, transform 300ms ease;
+}
+.amenities-icon-rail span:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--foreground);
+  transform: translateY(-4px);
+}
+.amenities-editorial-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 42px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--gold);
+  color: var(--gold);
+  font-size: 13px;
+  font-weight: 600;
+  transition: gap 300ms ease, color 300ms ease;
+}
+.amenities-editorial-link:hover {
+  gap: 19px;
+  color: var(--accent);
+}
+.amenities-mosaic {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  min-height: 500px;
+  overflow: hidden;
+  border-radius: 250px 0 0 250px;
+  background: var(--secondary);
+  box-shadow: -22px 0 70px color-mix(in srgb, var(--gold) 10%, transparent);
+}
+.amenity-mosaic-tile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 166px;
+  overflow: hidden;
+  color: var(--hero-ink);
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.3px;
+  line-height: 1.55;
+  transition: filter 400ms ease, transform 400ms ease;
+}
+.amenity-mosaic-tile:hover {
+  filter: brightness(1.08);
+  z-index: 1;
+}
+.amenity-mosaic-gold {
+  background: var(--gold);
+  color: var(--foreground);
+}
+.amenity-mosaic-olive {
+  background: color-mix(in srgb, var(--primary) 74%, var(--gold) 26%);
+}
+.amenity-mosaic-image img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 900ms cubic-bezier(0.2, 0.75, 0.2, 1), filter 400ms ease;
+}
+.amenity-mosaic-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 35%, oklch(0.1876 0.0092 43.02 / 0.58));
+}
+.amenity-mosaic-image span {
+  position: relative;
+  z-index: 1;
+  align-self: end;
+  margin-bottom: 20px;
+  text-shadow: 0 2px 14px oklch(0.1876 0.0092 43.02 / 0.7);
+}
+.amenity-mosaic-image:hover img {
+  transform: scale(1.07);
+  filter: saturate(1.08);
 }
 .section-heading {
   display: flex;
@@ -2070,6 +2249,16 @@ button:hover {
   .hero-bottom > span:last-child {
     display: none;
   }
+  .hero-carousel-controls {
+    right: 23px;
+    bottom: 68px;
+    gap: 8px;
+    font-size: 9px;
+  }
+  .hero-carousel-controls button {
+    width: 30px;
+    height: 30px;
+  }
   .legacy-stats {
     padding: 24px 15px;
     grid-template-columns: 1fr 1fr;
@@ -3154,4 +3343,37 @@ body {
 .site-header {
   position: sticky;
   top: 0;
+}
+
+@media (max-width: 900px) {
+  .amenities-editorial {
+    grid-template-columns: 1fr;
+    gap: 42px;
+  }
+  .amenities-editorial-copy { max-width: 640px; }
+  .amenities-mosaic {
+    min-height: 420px;
+    border-radius: 180px 0 0 180px;
+  }
+  .amenity-mosaic-tile { min-height: 140px; }
+}
+
+@media (max-width: 640px) {
+  .experiences-section { padding: 58px 0 62px; }
+  .amenities-editorial { gap: 30px; }
+  .amenities-editorial-copy h2 { font-size: 49px; }
+  .amenities-editorial-description { font-size: 13px; line-height: 1.75; }
+  .amenities-icon-rail { gap: 10px; margin-top: 30px; }
+  .amenities-icon-rail span { width: 46px; height: 46px; }
+  .amenities-editorial-link { margin-top: 30px; }
+  .amenities-mosaic {
+    min-height: 330px;
+    border-radius: 120px 0 0 120px;
+  }
+  .amenity-mosaic-tile {
+    min-height: 110px;
+    font-size: 9px;
+    letter-spacing: 0.8px;
+  }
+  .amenity-mosaic-image span { margin-bottom: 13px; }
 }

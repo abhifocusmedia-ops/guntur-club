@@ -2,6 +2,8 @@ import { Link } from "@tanstack/react-router";
 import {
   ArrowUpRight,
   ArrowDown,
+  ArrowLeft,
+  ArrowRight,
   Sparkles,
   Trophy,
   Utensils,
@@ -17,9 +19,57 @@ import { ServicesSection } from "./club-services";
 import { CommitteeSection, TestimonialsSection } from "./club-community";
 import { SectionLineArt } from "./section-line-art";
 
+const homeHeroSlides = [
+  {
+    id: "legacy",
+    image: photos.gardensHero,
+    alt: "Guntur Club's handcrafted metal bull sculpture in the gardens",
+    eyebrow: "97 YEARS OF PRESTIGE. ONE EXTRAORDINARY LEGACY.",
+    title: "Guntur Club",
+    tagline: <>A legacy of prestige.<br /><em>A life of distinction.</em></>,
+    description: <>Where heritage meets hospitality, and every<br className="desktop-break" /> generation finds a place to belong.</>,
+    primary: "Discover the club",
+    primaryTo: "/amenities",
+  },
+  {
+    id: "campus",
+    image: photos.aerial,
+    alt: "Aerial view of the Guntur Club campus",
+    eyebrow: "A PLACE TO BREATHE. A COMMUNITY TO BELONG TO.",
+    title: "Room to gather.",
+    tagline: <>A campus with <em>character.</em></>,
+    description: <>Green spaces, gracious corners and a warm welcome<br className="desktop-break" /> for every generation of the club.</>,
+    primary: "Explore the club",
+    primaryTo: "/heritage",
+  },
+  {
+    id: "hospitality",
+    image: photos.dining,
+    alt: "Dining at Guntur Club",
+    eyebrow: "HOSPITALITY WITH A SENSE OF OCCASION.",
+    title: "Gather beautifully.",
+    tagline: <>Good food. <em>Even better company.</em></>,
+    description: <>From everyday lunches to evenings worth remembering,<br className="desktop-break" /> every table has a story to tell.</>,
+    primary: "Discover dining",
+    primaryTo: "/amenities",
+  },
+  {
+    id: "pavilion",
+    image: photos.pavilion,
+    alt: "GC Pavilion sports complex",
+    eyebrow: "A NEW CHAPTER IN OUR LEGACY.",
+    title: "Play with passion.",
+    tagline: <>The GC Pavilion. <em>Made for more.</em></>,
+    description: <>World-class sport, recreation and shared pursuits<br className="desktop-break" /> in a contemporary club setting.</>,
+    primary: "Explore the facilities",
+    primaryTo: "/amenities",
+  },
+] as const;
+
 export function HomePage() {
   const contact = useContact();
   const heroRef = useRef<HTMLElement>(null);
+  const [activeSlide, setActiveSlide] = useState(0);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -43,31 +93,44 @@ export function HomePage() {
     };
   }, []);
 
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = window.setInterval(() => {
+      setActiveSlide((current) => (current + 1) % homeHeroSlides.length);
+    }, 7000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  const goToSlide = (index: number) => {
+    setActiveSlide((index + homeHeroSlides.length) % homeHeroSlides.length);
+  };
+
+  const slide = homeHeroSlides[activeSlide];
+
   return (
     <>
       <section className="home-hero" ref={heroRef}>
-        <img
-          className="hero-image"
-          src={photos.gardensHero}
-          alt="Guntur Club's handcrafted metal bull sculpture in the gardens"
-        />
+        <div className="hero-slides" aria-live="polite">
+          {homeHeroSlides.map((item, index) => (
+            <img
+              className={`hero-image hero-slide-image ${index === activeSlide ? "is-active" : ""}`}
+              key={item.id}
+              src={item.image}
+              alt={index === activeSlide ? item.alt : ""}
+              aria-hidden={index !== activeSlide}
+            />
+          ))}
+        </div>
         <div className="hero-shade" />
-        <div className="hero-content">
-          <p className="eyebrow">97 YEARS OF PRESTIGE. ONE EXTRAORDINARY LEGACY.</p>
-          <h1>Guntur Club</h1>
-          <p className="hero-tagline">
-            A legacy of prestige.
-            <br />
-            <em>A life of distinction.</em>
-          </p>
-          <p className="hero-description">
-            Where heritage meets hospitality, and every
-            <br className="desktop-break" /> generation finds a place to belong.
-          </p>
+        <div className="hero-content" key={slide.id}>
+          <p className="eyebrow">{slide.eyebrow}</p>
+          <h1>{slide.title}</h1>
+          <p className="hero-tagline">{slide.tagline}</p>
+          <p className="hero-description">{slide.description}</p>
           <div className="hero-actions">
             <Button asChild variant="hero" size="lg">
-              <Link to="/amenities">
-                Discover the club
+              <Link to={slide.primaryTo}>
+                {slide.primary}
                 <ArrowUpRight />
               </Link>
             </Button>
@@ -83,6 +146,15 @@ export function HomePage() {
             <ArrowDown size={18} />
           </a>
           <span>GUNTUR, ANDHRA PRADESH</span>
+        </div>
+        <div className="hero-carousel-controls" aria-label="Homepage slides">
+          <button type="button" onClick={() => goToSlide(activeSlide - 1)} aria-label="Previous slide">
+            <ArrowLeft size={16} />
+          </button>
+          <span>{String(activeSlide + 1).padStart(2, "0")} / {String(homeHeroSlides.length).padStart(2, "0")}</span>
+          <button type="button" onClick={() => goToSlide(activeSlide + 1)} aria-label="Next slide">
+            <ArrowRight size={16} />
+          </button>
         </div>
       </section>
       <ClubStats variant="home" />
@@ -113,60 +185,41 @@ export function HomePage() {
       </section>
       <section className="experiences-section" data-scroll-reveal>
         <SectionLineArt />
-        <div className="page-width">
-          <div className="section-heading" data-scroll-reveal>
-            <div>
-              <p className="eyebrow">EXCEPTIONAL, EVERY DAY</p>
-              <h2>The art of club living.</h2>
+        <div className="page-width amenities-editorial">
+          <div className="amenities-editorial-copy" data-scroll-reveal>
+            <p className="eyebrow">EXCEPTIONAL, EVERY DAY</p>
+            <h2>The art of<br /><em>club living.</em></h2>
+            <p className="amenities-editorial-description">
+              From sport and wellness to dining, family time and memorable celebrations, discover
+              the spaces that make Guntur Club feel like your own.
+            </p>
+            <div className="amenities-icon-rail" aria-label="Club amenity categories">
+              <span title="Sports & leisure"><Trophy size={21} /></span>
+              <span title="Dining & togetherness"><Utensils size={21} /></span>
+              <span title="Stay & celebrate"><BedDouble size={21} /></span>
+              <span title="Family & fellowship"><Sparkles size={21} /></span>
             </div>
-            <Link to="/amenities" className="text-link">
-              All amenities
+            <Link to="/amenities" className="amenities-editorial-link">
+              Explore all amenities
               <ArrowUpRight size={17} />
             </Link>
           </div>
-          <div className="experience-grid">
-            {[
-              {
-                name: "Sports & leisure",
-                copy: "Play with passion. Unwind in style.",
-                photo: photos.pool,
-                to: "/amenities",
-                icon: Trophy,
-              },
-              {
-                name: "Dining & togetherness",
-                copy: "Good food. Even better company.",
-                photo: photos.dining,
-                to: "/amenities",
-                icon: Utensils,
-              },
-              {
-                name: "Stay & celebrate",
-                copy: "Make every occasion extraordinary.",
-                photo: photos.hall,
-                to: "/stay-celebrate",
-                icon: BedDouble,
-              },
-            ].map((x) => (
-              <Link
-                key={x.name}
-                to={x.to as "/amenities" | "/stay-celebrate"}
-                className="experience-item"
-                data-scroll-reveal
-              >
-                <div className="experience-photo">
-                  <img src={x.photo} alt={x.name} loading="lazy" data-scroll-image />
-                  <span className="photo-arrow">
-                    <ArrowUpRight />
-                  </span>
-                </div>
-                <div className="experience-label">
-                  <x.icon size={19} />
-                  <h3>{x.name}</h3>
-                </div>
-                <p>{x.copy}</p>
-              </Link>
-            ))}
+          <div className="amenities-mosaic" aria-label="Guntur Club amenities">
+            <Link to="/amenities" className="amenity-mosaic-tile amenity-mosaic-image">
+              <img src={photos.pool} alt="Swimming pool at Guntur Club" loading="lazy" />
+              <span>Wellness & leisure</span>
+            </Link>
+            <Link to="/amenities" className="amenity-mosaic-tile amenity-mosaic-gold">Sports &<br />recreation</Link>
+            <Link to="/amenities" className="amenity-mosaic-tile amenity-mosaic-image">
+              <img src={photos.dining} alt="Dining at Guntur Club" loading="lazy" />
+              <span>Dining & hospitality</span>
+            </Link>
+            <Link to="/amenities" className="amenity-mosaic-tile amenity-mosaic-olive">GC Pavilion</Link>
+            <Link to="/stay-celebrate" className="amenity-mosaic-tile amenity-mosaic-image">
+              <img src={photos.hall} alt="Function hall at Guntur Club" loading="lazy" />
+              <span>Stay & celebrate</span>
+            </Link>
+            <Link to="/amenities" className="amenity-mosaic-tile amenity-mosaic-olive">Family &<br />fellowship</Link>
           </div>
         </div>
       </section>
