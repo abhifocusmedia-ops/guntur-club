@@ -12,8 +12,48 @@ export function ClubShell({children}:{children:ReactNode}) {
   const [open,setOpen]=useState(false)
   const [menu,setMenu]=useState(false)
   const location=useLocation()
-  useEffect(()=>{const timer=setTimeout(()=>setOpen(true),900);return ()=>clearTimeout(timer)},[])
+  // Automatic page-load contact popup is temporarily disabled.
+  // The form still opens when a visitor clicks a contact or enquiry button.
+  // useEffect(()=>{const timer=setTimeout(()=>setOpen(true),2400);return ()=>clearTimeout(timer)},[])
   useEffect(()=>setMenu(false),[location.pathname])
+  useEffect(()=>{
+    const updateHeader=()=>document.body.classList.toggle('has-scrolled',window.scrollY>18)
+    updateHeader()
+    window.addEventListener('scroll',updateHeader,{passive:true})
+    return ()=>window.removeEventListener('scroll',updateHeader)
+  },[])
+  useEffect(()=>{
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    let observer: IntersectionObserver | undefined
+    let mutations: MutationObserver | undefined
+    const timer=window.setTimeout(()=>{
+      const revealIfVisible=(element:HTMLElement)=>{
+        const rect=element.getBoundingClientRect()
+        if(rect.top < window.innerHeight * 1.15 && rect.bottom > 0) element.classList.add('is-visible')
+      }
+      const observeElements=(root:ParentNode=document)=>{
+        if(root instanceof HTMLElement && root.matches('[data-scroll-reveal], [data-scroll-image]')) {
+          observer?.observe(root)
+          revealIfVisible(root)
+        }
+        root.querySelectorAll<HTMLElement>('[data-scroll-reveal], [data-scroll-image]').forEach(element=>{
+          observer?.observe(element)
+          revealIfVisible(element)
+        })
+      }
+      observer=new IntersectionObserver((entries)=>entries.forEach(entry=>{
+        if(entry.isIntersecting) entry.target.classList.add('is-visible')
+      }),{threshold:0.12,rootMargin:'0px 0px -40px'})
+      observeElements()
+      mutations=new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(node=>{
+        if(node.nodeType===Node.ELEMENT_NODE) observeElements(node as Element)
+      })))
+      mutations.observe(document.body,{childList:true,subtree:true})
+      document.body.classList.add('scroll-reveal-ready')
+      requestAnimationFrame(()=>observeElements())
+    },500)
+    return ()=>{window.clearTimeout(timer); observer?.disconnect(); mutations?.disconnect(); document.body.classList.remove('scroll-reveal-ready')}
+  },[])
   return <ContactContext.Provider value={()=>setOpen(true)}>
     <div className="topline"><span>A LEGACY OF PRESTIGE, SINCE 1929</span><a href="tel:08632233703"><Phone size={12}/>0863 2233 703</a></div>
     <header className="site-header"><Link to="/" className="brand" aria-label="Guntur Club home"><img className="brand-logo" src={clubLogo} alt="Guntur Club — established 1929"/></Link>

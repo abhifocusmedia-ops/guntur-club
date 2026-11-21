@@ -8,19 +8,44 @@ import {
   BedDouble,
   Check,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useContact } from "./club-shell";
 import { ContactForm } from "./contact-form";
 import { photos, amenities, address } from "@/lib/club";
 import { ServicesSection } from "./club-services";
 import { CommitteeSection, TestimonialsSection } from "./club-community";
+import { SectionLineArt } from "./section-line-art";
 
 export function HomePage() {
   const contact = useContact();
+  const heroRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let frame = 0;
+    const updateParallax = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const hero = heroRef.current;
+        if (!hero) return;
+        const offset = Math.max(-18, Math.min(34, hero.getBoundingClientRect().top * -0.08));
+        hero.style.setProperty("--hero-parallax", `${offset}px`);
+      });
+    };
+
+    updateParallax();
+    window.addEventListener("scroll", updateParallax, { passive: true });
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", updateParallax);
+    };
+  }, []);
+
   return (
     <>
-      <section className="home-hero">
+      <section className="home-hero" ref={heroRef}>
         <img
           className="hero-image"
           src={photos.gardensHero}
@@ -54,14 +79,15 @@ export function HomePage() {
         </div>
         <div className="hero-bottom">
           <span>HERITAGE · LEISURE · FELLOWSHIP</span>
-          <a href="#welcome" aria-label="Scroll to welcome">
+          <a href="#welcome" className="hero-scroll-indicator" aria-label="Scroll to welcome">
             <ArrowDown size={18} />
           </a>
           <span>GUNTUR, ANDHRA PRADESH</span>
         </div>
       </section>
       <ClubStats variant="home" />
-      <section className="welcome-section page-width" id="welcome">
+      <section className="welcome-section page-width" id="welcome" data-scroll-reveal>
+        <SectionLineArt />
         <div className="welcome-heading">
           <p className="eyebrow">THE HEART OF GUNTUR'S SOCIAL COMMUNITY</p>
           <h2>
@@ -85,9 +111,10 @@ export function HomePage() {
           </Link>
         </div>
       </section>
-      <section className="experiences-section">
+      <section className="experiences-section" data-scroll-reveal>
+        <SectionLineArt />
         <div className="page-width">
-          <div className="section-heading">
+          <div className="section-heading" data-scroll-reveal>
             <div>
               <p className="eyebrow">EXCEPTIONAL, EVERY DAY</p>
               <h2>The art of club living.</h2>
@@ -125,9 +152,10 @@ export function HomePage() {
                 key={x.name}
                 to={x.to as "/amenities" | "/stay-celebrate"}
                 className="experience-item"
+                data-scroll-reveal
               >
                 <div className="experience-photo">
-                  <img src={x.photo} alt={x.name} loading="lazy" />
+                  <img src={x.photo} alt={x.name} loading="lazy" data-scroll-image />
                   <span className="photo-arrow">
                     <ArrowUpRight />
                   </span>
@@ -143,8 +171,14 @@ export function HomePage() {
         </div>
       </section>
       <ServicesSection />
-      <section className="pavilion-feature">
-        <img src={photos.pavilion} alt="GC Pavilion sports complex" loading="lazy" />
+      <section className="pavilion-feature" data-scroll-reveal>
+        <SectionLineArt />
+        <img
+          src={photos.pavilion}
+          alt="GC Pavilion sports complex"
+          loading="lazy"
+          data-scroll-image
+        />
         <div className="pavilion-copy">
           <p className="eyebrow">A NEW CHAPTER IN OUR LEGACY</p>
           <h2>
@@ -182,6 +216,7 @@ export function PageIntro({
 }) {
   return (
     <section className="inner-hero">
+      <SectionLineArt />
       <img src={image} alt={title} />
       <div className="hero-shade" />
       <div className="page-width">
@@ -193,71 +228,82 @@ export function PageIntro({
   );
 }
 
-function ClubStats({
-  variant = "home",
-}: {
-  variant?: "home" | "about";
-}) {
+function ClubStats({ variant = "home" }: { variant?: "home" | "about" }) {
   const isAbout = variant === "about";
 
+  const stats = isAbout
+    ? [
+        { value: 1700, suffix: "+", label: "Members" },
+        { value: 16, suffix: "+", label: "Affiliations" },
+        { value: 20, suffix: "+", label: "Rooms" },
+        { value: 11, suffix: "+", label: "Facilities" },
+      ]
+    : [
+        { value: 1929, suffix: "", label: "A distinguished beginning" },
+        { value: 97, suffix: " years", label: "Of heritage & fellowship" },
+        { value: 1700, suffix: "+", label: "Distinguished members" },
+        { value: 3, suffix: " acres", label: "Of exceptional experiences" },
+      ];
+
   return (
-    <div
-      className="legacy-stats"
-      aria-label="Guntur Club at a glance"
-    >
-      {isAbout ? (
-        <>
-          {/* ABOUT PAGE STATISTICS */}
-
-          <div>
-            <strong>1700+</strong>
-            <span>Members</span>
-          </div>
-
-          <div>
-            <strong>16+</strong>
-            <span>Affiliations</span>
-          </div>
-
-          <div>
-            <strong>20+</strong>
-            <span>Rooms</span>
-          </div>
-
-          <div>
-            <strong>11+</strong>
-            <span>Facilities</span>
-          </div>
-        </>
-      ) : (
-        <>
-          {/* HOMEPAGE STATISTICS - ORIGINAL */}
-
-          <div>
-            <strong>1929</strong>
-            <span>A distinguished beginning</span>
-          </div>
-
-          <div>
-            <strong>97<span> years</span></strong>
-            <span>Of heritage & fellowship</span>
-          </div>
-
-          <div>
-            <strong>1,700<span>+</span></strong>
-            <span>Distinguished members</span>
-          </div>
-
-          <div>
-            <strong>3<span> acres</span></strong>
-            <span>Of exceptional experiences</span>
-          </div>
-        </>
-      )}
+    <div className="legacy-stats" aria-label="Guntur Club at a glance" data-scroll-reveal>
+      {stats.map((stat) => (
+        <AnimatedStat key={stat.label} {...stat} />
+      ))}
     </div>
   );
 }
 
+function AnimatedStat({ value, suffix, label }: { value: number; suffix: string; label: string }) {
+  const [current, setCurrent] = useState(0);
+  const statRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const stat = statRef.current;
+    if (!stat) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setCurrent(value);
+      return;
+    }
+
+    let frame = 0;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        const startedAt = performance.now();
+        const duration = 1400;
+
+        const tick = (now: number) => {
+          const progress = Math.min((now - startedAt) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          setCurrent(Math.round(value * eased));
+          if (progress < 1) frame = requestAnimationFrame(tick);
+        };
+
+        frame = requestAnimationFrame(tick);
+        observer.disconnect();
+      },
+      { threshold: 0.35 },
+    );
+
+    observer.observe(stat);
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+    };
+  }, [value]);
+
+  return (
+    <div ref={statRef} data-scroll-reveal>
+      <strong>
+        {current.toLocaleString()}
+        {suffix}
+      </strong>
+      <span>{label}</span>
+    </div>
+  );
+}
 
 export function HeritagePage() {
   const contact = useContact();
@@ -291,6 +337,7 @@ export function HeritagePage() {
         </div>
       </section>
       <section className="heritage-history" aria-labelledby="history-heading">
+        <SectionLineArt />
         <div className="page-width">
           <p className="eyebrow">MILESTONES IN OUR JOURNEY</p>
           <h2 id="history-heading">
@@ -300,17 +347,26 @@ export function HeritagePage() {
             <article className="history-milestone">
               <p className="history-year">1929</p>
               <h3>A formal beginning</h3>
-              <p>Registered under the Companies Act, establishing the foundations of a lasting institution.</p>
+              <p>
+                Registered under the Companies Act, establishing the foundations of a lasting
+                institution.
+              </p>
             </article>
             <article className="history-milestone">
               <p className="history-year">1977</p>
               <h3>A community comes together</h3>
-              <p>After a devastating cyclone, members’ donations and contributions helped restore the club.</p>
+              <p>
+                After a devastating cyclone, members’ donations and contributions helped restore the
+                club.
+              </p>
             </article>
             <article className="history-milestone">
               <p className="history-year">1998</p>
               <h3>A new home, the same heart</h3>
-              <p>The club moved to its present 2.75-acre property, opening a new chapter in its story.</p>
+              <p>
+                The club moved to its present 2.75-acre property, opening a new chapter in its
+                story.
+              </p>
             </article>
           </div>
           <div className="history-cta">
@@ -341,6 +397,7 @@ export function AmenitiesPage() {
         image={photos.pool}
       />
       <section className="page-width amenities-section">
+        <SectionLineArt />
         <div className="section-heading">
           <div>
             <p className="eyebrow">CLUB AMENITIES</p>
@@ -396,6 +453,7 @@ export function StayPage() {
         image={photos.hall}
       />
       <section className="page-width stay-section">
+        <SectionLineArt />
         {[
           {
             title: "A stay that feels like home.",
@@ -484,6 +542,7 @@ export function AffiliationsPage() {
         image={photos.gardens}
       />
       <section className="page-width affiliations-section">
+        <SectionLineArt />
         <p className="eyebrow">A NETWORK OF PRIVILEGED AFFILIATIONS</p>
         <h2>Fellowship without boundaries.</h2>
         <p className="section-description">
@@ -516,6 +575,7 @@ export function ContactPage() {
         image={photos.club}
       />
       <section className="page-width contact-page">
+        <SectionLineArt />
         <div>
           <p className="eyebrow">GUNTUR CLUB</p>
           <h2>A warm welcome awaits.</h2>

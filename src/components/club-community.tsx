@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { committeeMembers, memberTestimonials } from "@/lib/club";
 import { Link } from "@tanstack/react-router";
+import { SectionLineArt } from "./section-line-art";
 
 // export function CommitteeSection({ title = 'Committee Members' }: { title?: string }) {
 //   return <section className="committee-section" aria-labelledby="committee-heading"><div className="page-width">
@@ -27,17 +28,19 @@ export function CommitteeSection({
       id="committee"
       className={`committee-section ${isFeatured ? "committee-featured" : "committee-default"}`}
       aria-labelledby="committee-heading"
+      data-scroll-reveal
     >
+      <SectionLineArt />
       <div className="page-width">
         {isFeatured ? (
-          <div className="committee-header">
+          <div className="committee-header" data-scroll-reveal>
             <p className="eyebrow">LEADERSHIP</p>
             <h2 id="committee-heading">
               Meet the <em>committee.</em>
             </h2>
           </div>
         ) : (
-          <div className="section-heading">
+          <div className="section-heading" data-scroll-reveal>
             <div>
               <p className="eyebrow">GUIDING OUR LEGACY</p>
               <h2 id="committee-heading">{title}</h2>
@@ -50,9 +53,9 @@ export function CommitteeSection({
 
         <div className="committee-grid">
           {members.map((member) => (
-            <article className="committee-member" key={member.name}>
+            <article className="committee-member" key={member.name} data-scroll-reveal>
               <div className="committee-image">
-                <img src={member.image} alt={member.name} loading="lazy" />
+                <img src={member.image} alt={member.name} loading="lazy" data-scroll-image />
               </div>
 
               <div className="committee-info">
@@ -84,15 +87,13 @@ export function TestimonialsSection() {
   if (total === 0) return null;
 
   // Show 3 testimonials at a time
-  
-const visibleTestimonials = Array.from(
-  { length: Math.min(3, total) },
-  (_, i) => memberTestimonials[(index + i) % total]
-).filter(
-  (testimonial): testimonial is (typeof memberTestimonials)[number] =>
-    testimonial !== undefined
-);
 
+  const visibleTestimonials = Array.from(
+    { length: Math.min(3, total) },
+    (_, i) => memberTestimonials[(index + i) % total],
+  ).filter(
+    (testimonial): testimonial is (typeof memberTestimonials)[number] => testimonial !== undefined,
+  );
 
   const next = () => {
     setIndex((current) => (current + 1) % total);
@@ -103,10 +104,11 @@ const visibleTestimonials = Array.from(
   };
 
   return (
-    <section className="testimonials-section" aria-labelledby="testimonials-heading">
+    <section className="testimonials-section" aria-labelledby="testimonials-heading" data-scroll-reveal>
+      <SectionLineArt />
       <div className="page-width">
         {/* Section Heading */}
-        <div className="testimonials-header">
+        <div className="testimonials-header" data-scroll-reveal>
           <div>
             <p className="eyebrow">MEMBER VOICES</p>
 
@@ -125,7 +127,7 @@ const visibleTestimonials = Array.from(
         {/* Testimonial Cards */}
         <div className="testimonials-grid">
           {visibleTestimonials.map((testimonial, i) => (
-            <article className="testimonial-card" key={`${testimonial.name}-${i}`}>
+            <article className="testimonial-card" key={`${testimonial.name}-${i}`} data-scroll-reveal>
               <div className="testimonial-member">
                 <div className="testimonial-avatar">
                   <img src={testimonial.image} alt={testimonial.name} loading="lazy" />
