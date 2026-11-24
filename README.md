@@ -1,6 +1,6 @@
 # Clubconnect Popup
 
-hey using this brochure can u make an premiere website make sure contact  navigation  button or any labels in every page and open with pop up contact form
+hey using this brochure can u make an premiere website make sure contact navigation button or any labels in every page and open with pop up contact form
 
 This project was built with [Lovable](https://lovable.dev).
 

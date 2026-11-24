@@ -70,7 +70,7 @@ import pavilion from "@/assets/guntur-pavilion.jpg";
 import gardens from "@/assets/guntur-gardens.jpg";
 import gardensHero from "@/assets/gardens-hero.jpg";
 import lounge from "@/assets/guntur-play.jpg";
-import brochure from "@/assets/brochure.pdf.pdf"
+import brochure from "@/assets/brochure.pdf.pdf";
 import logo from "@/assets/guntur-club-logo.png";
 import president from "@/assets/committee-vpr.jpg";
 import secretary from "@/assets/committee-cr.jpg";
@@ -171,17 +171,20 @@ export const committeeMembers = [
 export const memberTestimonials = [
   {
     name: "K. Venkateswara Rao",
-    quote: "This club is a great value for the money. The membership fees are reasonable.  I've met some wonderful people here, and it's become my go-to place for recreational activities.",
+    quote:
+      "This club is a great value for the money. The membership fees are reasonable.  I've met some wonderful people here, and it's become my go-to place for recreational activities.",
     image: venkateswaraRao,
   },
   {
     name: "M. Anil Kumar",
-    quote: "I love this club! The facilities are top-notch, the staff is friendly and helpful, and the atmosphere is fantastic. It's a great place to relax, work out, or socialize with friends.",
+    quote:
+      "I love this club! The facilities are top-notch, the staff is friendly and helpful, and the atmosphere is fantastic. It's a great place to relax, work out, or socialize with friends.",
     image: anilKumar,
   },
   {
     name: "O. Venkata Ramana",
-    quote: "The food and drinks at this club are excellent. I come here for the delicious meals and cocktails, and the live music nights are a bonus. It's a great place to unwind after a long week..",
+    quote:
+      "The food and drinks at this club are excellent. I come here for the delicious meals and cocktails, and the live music nights are a bonus. It's a great place to unwind after a long week..",
     image: venkataRamana,
   },
 ];

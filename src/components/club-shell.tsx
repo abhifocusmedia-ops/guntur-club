@@ -1,68 +1,232 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
-import { Link, useLocation } from '@tanstack/react-router'
-import { Menu, X, ArrowUpRight, Phone, Mail, MapPin, Download } from 'lucide-react'
-import * as Dialog from '@radix-ui/react-dialog'
-import { Button } from '@/components/ui/button'
-import { ContactForm } from './contact-form'
-import { photos, address, brochureUrl, clubLogo } from '@/lib/club'
-const ContactContext = createContext(()=>{})
-export const useContact = ()=>useContext(ContactContext)
-const navigation = [{to:'/',label:'Home'},{to:'/heritage',label:'About Us'},{to:'/services',label:'Services'},{to:'/amenities',label:'Amenities'},{to:'/stay-celebrate',label:'Stay & Celebrate'},{to:'/affiliations',label:'Affiliations'},{to:'/contact',label:'Contact'}] as const
-export function ClubShell({children}:{children:ReactNode}) {
-  const [open,setOpen]=useState(false)
-  const [menu,setMenu]=useState(false)
-  const location=useLocation()
-  // Automatic page-load contact popup is temporarily disabled.
-  // The form still opens when a visitor clicks a contact or enquiry button.
-  // useEffect(()=>{const timer=setTimeout(()=>setOpen(true),2400);return ()=>clearTimeout(timer)},[])
-  useEffect(()=>setMenu(false),[location.pathname])
-  useEffect(()=>{
-    const updateHeader=()=>document.body.classList.toggle('has-scrolled',window.scrollY>18)
-    updateHeader()
-    window.addEventListener('scroll',updateHeader,{passive:true})
-    return ()=>window.removeEventListener('scroll',updateHeader)
-  },[])
-  useEffect(()=>{
-    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    let observer: IntersectionObserver | undefined
-    let mutations: MutationObserver | undefined
-    const timer=window.setTimeout(()=>{
-      const revealIfVisible=(element:HTMLElement)=>{
-        const rect=element.getBoundingClientRect()
-        if(rect.top < window.innerHeight * 1.15 && rect.bottom > 0) element.classList.add('is-visible')
-      }
-      const observeElements=(root:ParentNode=document)=>{
-        if(root instanceof HTMLElement && root.matches('[data-scroll-reveal], [data-scroll-image]')) {
-          observer?.observe(root)
-          revealIfVisible(root)
+import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import { Link, useLocation } from "@tanstack/react-router";
+import { Menu, X, ArrowUpRight, Phone, Mail, MapPin, Download } from "lucide-react";
+import * as Dialog from "@radix-ui/react-dialog";
+import { Button } from "@/components/ui/button";
+import { ContactForm } from "./contact-form";
+import { photos, address, brochureUrl, clubLogo } from "@/lib/club";
+const ContactContext = createContext(() => {});
+export const useContact = () => useContext(ContactContext);
+const navigation = [
+  { to: "/", label: "Home" },
+  { to: "/heritage", label: "About Us" },
+  { to: "/services", label: "Services" },
+  { to: "/amenities", label: "Amenities" },
+  { to: "/stay-celebrate", label: "Stay & Celebrate" },
+  { to: "/affiliations", label: "Affiliations" },
+  { to: "/contact", label: "Contact" },
+] as const;
+export function ClubShell({ children }: { children: ReactNode }) {
+  const [open, setOpen] = useState(false);
+  const [menu, setMenu] = useState(false);
+  const location = useLocation();
+  useEffect(() => {
+    const timer = window.setTimeout(() => setOpen(true), 2400);
+    return () => window.clearTimeout(timer);
+  }, []);
+  useEffect(() => setMenu(false), [location.pathname]);
+  useEffect(() => {
+    const updateHeader = () => document.body.classList.toggle("has-scrolled", window.scrollY > 18);
+    updateHeader();
+    window.addEventListener("scroll", updateHeader, { passive: true });
+    return () => window.removeEventListener("scroll", updateHeader);
+  }, []);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let observer: IntersectionObserver | undefined;
+    let mutations: MutationObserver | undefined;
+    const timer = window.setTimeout(() => {
+      const revealIfVisible = (element: HTMLElement) => {
+        const rect = element.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 1.15 && rect.bottom > 0)
+          element.classList.add("is-visible");
+      };
+      const observeElements = (root: ParentNode = document) => {
+        if (
+          root instanceof HTMLElement &&
+          root.matches("[data-scroll-reveal], [data-scroll-image]")
+        ) {
+          observer?.observe(root);
+          revealIfVisible(root);
         }
-        root.querySelectorAll<HTMLElement>('[data-scroll-reveal], [data-scroll-image]').forEach(element=>{
-          observer?.observe(element)
-          revealIfVisible(element)
-        })
-      }
-      observer=new IntersectionObserver((entries)=>entries.forEach(entry=>{
-        if(entry.isIntersecting) entry.target.classList.add('is-visible')
-      }),{threshold:0.12,rootMargin:'0px 0px -40px'})
-      observeElements()
-      mutations=new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(node=>{
-        if(node.nodeType===Node.ELEMENT_NODE) observeElements(node as Element)
-      })))
-      mutations.observe(document.body,{childList:true,subtree:true})
-      document.body.classList.add('scroll-reveal-ready')
-      requestAnimationFrame(()=>observeElements())
-    },500)
-    return ()=>{window.clearTimeout(timer); observer?.disconnect(); mutations?.disconnect(); document.body.classList.remove('scroll-reveal-ready')}
-  },[])
-  return <ContactContext.Provider value={()=>setOpen(true)}>
-    <div className="topline"><span>A LEGACY OF PRESTIGE, SINCE 1929</span><a href="tel:08632233703"><Phone size={12}/>0863 2233 703</a></div>
-    <header className="site-header"><Link to="/" className="brand" aria-label="Guntur Club home"><img className="brand-logo" src={clubLogo} alt="Guntur Club — established 1929"/></Link>
-    <nav className={menu?'main-nav is-open':'main-nav'} aria-label="Main navigation">{navigation.map(item=><Link key={item.to} to={item.to} activeOptions={{exact:true}} activeProps={{className:'active'}}>{item.label}</Link>)}</nav>
-    <Button onClick={()=>setOpen(true)} className="header-contact">Get in touch<ArrowUpRight/></Button><Button variant="ghost" size="icon" className="mobile-menu" aria-label={menu?'Close navigation':'Open navigation'} onClick={()=>setMenu(!menu)}>{menu?<X/>:<Menu/>}</Button></header>
-    <main>{children}</main>
-    <section className="contact-band"><div><p className="eyebrow">YOUR NEXT CHAPTER STARTS HERE</p><h2>Make yourself part of the legacy.</h2></div><Button onClick={()=>setOpen(true)} size="lg">Connect with us<ArrowUpRight/></Button></section>
-    <footer className="site-footer"><div className="footer-top"><div><Link to="/" className="footer-brand" aria-label="Guntur Club home"><img className="footer-logo" src={clubLogo} alt="Guntur Club — established 1929"/></Link><p>Prestige. Fellowship. A way of life.</p><Button asChild variant="outline" className="brochure-link"><a href={brochureUrl} target="_blank" rel="noreferrer"><Download size={16}/>View club brochure <span>2026</span></a></Button></div><div><h4>Explore the club</h4>{navigation.slice(1,-1).map(x=><Link key={x.to} to={x.to}>{x.label}</Link>)}</div><div className="footer-contact"><h4>We'd love to hear from you</h4><a href="https://www.google.com/maps/search/?api=1&query=Guntur+Club+Palakaluru+Road" target="_blank" rel="noreferrer"><MapPin size={16}/>{address}</a><a href="tel:08632233703"><Phone size={16}/>0863 2233 703 · 0863 2355 241</a><a href="mailto:info@gunturclub.com"><Mail size={16}/>info@gunturclub.com</a></div></div><div className="footer-bottom"><span>© 2026 Guntur Club. All rights reserved.</span><span>GUNTUR, ANDHRA PRADESH · INDIA</span></div></footer>
-    <Button className="floating-contact" onClick={()=>setOpen(true)} aria-label="Open contact form"><Mail/>Contact us</Button>
-    <Dialog.Root open={open} onOpenChange={setOpen}><Dialog.Portal><Dialog.Overlay className="contact-overlay"/><Dialog.Content className="contact-dialog"><div className="dialog-photo"><img src={photos.club} alt="Guntur Club at sunset"/><div><img className="dialog-logo" src={clubLogo} alt="Guntur Club — established 1929"/><p>A tradition of warm welcomes.<br/>Since 1929.</p></div></div><div className="dialog-body"><Dialog.Close asChild><Button variant="ghost" size="icon" className="dialog-close" aria-label="Close contact form"><X/></Button></Dialog.Close><p className="eyebrow">WELCOME TO GUNTUR CLUB</p><Dialog.Title className="dialog-title">Let's connect.</Dialog.Title><Dialog.Description className="dialog-description">Membership, a memorable stay or a special celebration — we'd love to hear from you.</Dialog.Description><ContactForm/><a className="dialog-phone" href="tel:08632233703"><Phone size={14}/>Prefer a conversation? 0863 2233 703</a></div></Dialog.Content></Dialog.Portal></Dialog.Root>
-  </ContactContext.Provider>
+        root
+          .querySelectorAll<HTMLElement>("[data-scroll-reveal], [data-scroll-image]")
+          .forEach((element) => {
+            observer?.observe(element);
+            revealIfVisible(element);
+          });
+      };
+      observer = new IntersectionObserver(
+        (entries) =>
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) entry.target.classList.add("is-visible");
+          }),
+        { threshold: 0.12, rootMargin: "0px 0px -40px" },
+      );
+      observeElements();
+      mutations = new MutationObserver((records) =>
+        records.forEach((record) =>
+          record.addedNodes.forEach((node) => {
+            if (node.nodeType === Node.ELEMENT_NODE) observeElements(node as Element);
+          }),
+        ),
+      );
+      mutations.observe(document.body, { childList: true, subtree: true });
+      document.body.classList.add("scroll-reveal-ready");
+      requestAnimationFrame(() => observeElements());
+    }, 500);
+    return () => {
+      window.clearTimeout(timer);
+      observer?.disconnect();
+      mutations?.disconnect();
+      document.body.classList.remove("scroll-reveal-ready");
+    };
+  }, []);
+  return (
+    <ContactContext.Provider value={() => setOpen(true)}>
+      <div className="topline">
+        <span>A LEGACY OF PRESTIGE, SINCE 1929</span>
+        <a href="tel:08632233703">
+          <Phone size={12} />
+          0863 2233 703
+        </a>
+      </div>
+      <header className="site-header">
+        <Link to="/" className="brand" aria-label="Guntur Club home">
+          <img className="brand-logo" src={clubLogo} alt="Guntur Club — established 1929" />
+        </Link>
+        <nav className={menu ? "main-nav is-open" : "main-nav"} aria-label="Main navigation">
+          {navigation.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              activeOptions={{ exact: true }}
+              activeProps={{ className: "active" }}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+        <Button onClick={() => setOpen(true)} className="header-contact">
+          Get in touch
+          <ArrowUpRight />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="mobile-menu"
+          aria-label={menu ? "Close navigation" : "Open navigation"}
+          onClick={() => setMenu(!menu)}
+        >
+          {menu ? <X /> : <Menu />}
+        </Button>
+      </header>
+      <main>{children}</main>
+      <section className="contact-band">
+        <div>
+          <p className="eyebrow">YOUR NEXT CHAPTER STARTS HERE</p>
+          <h2>Make yourself part of the legacy.</h2>
+        </div>
+        <Button onClick={() => setOpen(true)} size="lg">
+          Connect with us
+          <ArrowUpRight />
+        </Button>
+      </section>
+      <footer className="site-footer">
+        <div className="footer-top">
+          <div>
+            <Link to="/" className="footer-brand" aria-label="Guntur Club home">
+              <img className="footer-logo" src={clubLogo} alt="Guntur Club — established 1929" />
+            </Link>
+            <p>Prestige. Fellowship. A way of life.</p>
+            <Button asChild variant="outline" className="brochure-link">
+              <a href={brochureUrl} target="_blank" rel="noreferrer">
+                <Download size={16} />
+                View club brochure <span>2026</span>
+              </a>
+            </Button>
+          </div>
+          <div>
+            <h4>Explore the club</h4>
+            {navigation.slice(1, -1).map((x) => (
+              <Link key={x.to} to={x.to}>
+                {x.label}
+              </Link>
+            ))}
+          </div>
+          <div className="footer-contact">
+            <h4>We'd love to hear from you</h4>
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=Guntur+Club+Palakaluru+Road"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <MapPin size={16} />
+              {address}
+            </a>
+            <a href="tel:08632233703">
+              <Phone size={16} />
+              0863 2233 703 · 0863 2355 241
+            </a>
+            <a href="mailto:info@gunturclub.com">
+              <Mail size={16} />
+              info@gunturclub.com
+            </a>
+          </div>
+        </div>
+        <div className="footer-bottom">
+          <span>© 2026 Guntur Club. All rights reserved.</span>
+          <span>GUNTUR, ANDHRA PRADESH · INDIA</span>
+        </div>
+      </footer>
+      <Button
+        className="floating-contact"
+        onClick={() => setOpen(true)}
+        aria-label="Open contact form"
+      >
+        <Mail />
+        Contact us
+      </Button>
+      <Dialog.Root open={open} onOpenChange={setOpen}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="contact-overlay" />
+          <Dialog.Content className="contact-dialog">
+            <div className="dialog-photo">
+              <img src={photos.club} alt="Guntur Club at sunset" />
+              <div>
+                <img className="dialog-logo" src={clubLogo} alt="Guntur Club — established 1929" />
+                <p>
+                  A tradition of warm welcomes.
+                  <br />
+                  Since 1929.
+                </p>
+              </div>
+            </div>
+            <div className="dialog-body">
+              <Dialog.Close asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="dialog-close"
+                  aria-label="Close contact form"
+                >
+                  <X />
+                </Button>
+              </Dialog.Close>
+              <p className="eyebrow">WELCOME TO GUNTUR CLUB</p>
+              <Dialog.Title className="dialog-title">Let's connect.</Dialog.Title>
+              <Dialog.Description className="dialog-description">
+                Membership, a memorable stay or a special celebration — we'd love to hear from you.
+              </Dialog.Description>
+              <ContactForm />
+              <a className="dialog-phone" href="tel:08632233703">
+                <Phone size={14} />
+                Prefer a conversation? 0863 2233 703
+              </a>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
+    </ContactContext.Provider>
+  );
 }

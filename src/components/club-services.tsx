@@ -97,7 +97,12 @@ export function ServicesSection() {
         </div>
         <div className="service-platform-grid" data-scroll-reveal>
           {clubServices.slice(0, 3).map((service) => (
-            <Link to="/services" key={service.name} className="service-platform-card" data-scroll-reveal>
+            <Link
+              to="/services"
+              key={service.name}
+              className="service-platform-card"
+              data-scroll-reveal
+            >
               <span className="service-platform-icon" aria-hidden="true">
                 <service.icon size={34} strokeWidth={1.5} />
               </span>

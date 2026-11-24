@@ -104,7 +104,11 @@ export function TestimonialsSection() {
   };
 
   return (
-    <section className="testimonials-section" aria-labelledby="testimonials-heading" data-scroll-reveal>
+    <section
+      className="testimonials-section"
+      aria-labelledby="testimonials-heading"
+      data-scroll-reveal
+    >
       <SectionLineArt />
       <div className="page-width">
         {/* Section Heading */}
@@ -127,7 +131,11 @@ export function TestimonialsSection() {
         {/* Testimonial Cards */}
         <div className="testimonials-grid">
           {visibleTestimonials.map((testimonial, i) => (
-            <article className="testimonial-card" key={`${testimonial.name}-${i}`} data-scroll-reveal>
+            <article
+              className="testimonial-card"
+              key={`${testimonial.name}-${i}`}
+              data-scroll-reveal
+            >
               <div className="testimonial-member">
                 <div className="testimonial-avatar">
                   <img src={testimonial.image} alt={testimonial.name} loading="lazy" />

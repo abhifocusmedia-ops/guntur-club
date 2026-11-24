@@ -26,8 +26,19 @@ const homeHeroSlides = [
     alt: "Guntur Club's handcrafted metal bull sculpture in the gardens",
     eyebrow: "97 YEARS OF PRESTIGE. ONE EXTRAORDINARY LEGACY.",
     title: "Guntur Club",
-    tagline: <>A legacy of prestige.<br /><em>A life of distinction.</em></>,
-    description: <>Where heritage meets hospitality, and every<br className="desktop-break" /> generation finds a place to belong.</>,
+    tagline: (
+      <>
+        A legacy of prestige.
+        <br />
+        <em>A life of distinction.</em>
+      </>
+    ),
+    description: (
+      <>
+        Where heritage meets hospitality, and every
+        <br className="desktop-break" /> generation finds a place to belong.
+      </>
+    ),
     primary: "Discover the club",
     primaryTo: "/amenities",
   },
@@ -37,8 +48,17 @@ const homeHeroSlides = [
     alt: "Aerial view of the Guntur Club campus",
     eyebrow: "A PLACE TO BREATHE. A COMMUNITY TO BELONG TO.",
     title: "Room to gather.",
-    tagline: <>A campus with <em>character.</em></>,
-    description: <>Green spaces, gracious corners and a warm welcome<br className="desktop-break" /> for every generation of the club.</>,
+    tagline: (
+      <>
+        A campus with <em>character.</em>
+      </>
+    ),
+    description: (
+      <>
+        Green spaces, gracious corners and a warm welcome
+        <br className="desktop-break" /> for every generation of the club.
+      </>
+    ),
     primary: "Explore the club",
     primaryTo: "/heritage",
   },
@@ -48,8 +68,17 @@ const homeHeroSlides = [
     alt: "Dining at Guntur Club",
     eyebrow: "HOSPITALITY WITH A SENSE OF OCCASION.",
     title: "Gather beautifully.",
-    tagline: <>Good food. <em>Even better company.</em></>,
-    description: <>From everyday lunches to evenings worth remembering,<br className="desktop-break" /> every table has a story to tell.</>,
+    tagline: (
+      <>
+        Good food. <em>Even better company.</em>
+      </>
+    ),
+    description: (
+      <>
+        From everyday lunches to evenings worth remembering,
+        <br className="desktop-break" /> every table has a story to tell.
+      </>
+    ),
     primary: "Discover dining",
     primaryTo: "/amenities",
   },
@@ -59,8 +88,17 @@ const homeHeroSlides = [
     alt: "GC Pavilion sports complex",
     eyebrow: "A NEW CHAPTER IN OUR LEGACY.",
     title: "Play with passion.",
-    tagline: <>The GC Pavilion. <em>Made for more.</em></>,
-    description: <>World-class sport, recreation and shared pursuits<br className="desktop-break" /> in a contemporary club setting.</>,
+    tagline: (
+      <>
+        The GC Pavilion. <em>Made for more.</em>
+      </>
+    ),
+    description: (
+      <>
+        World-class sport, recreation and shared pursuits
+        <br className="desktop-break" /> in a contemporary club setting.
+      </>
+    ),
     primary: "Explore the facilities",
     primaryTo: "/amenities",
   },
@@ -105,7 +143,7 @@ export function HomePage() {
     setActiveSlide((index + homeHeroSlides.length) % homeHeroSlides.length);
   };
 
-  const slide = homeHeroSlides[activeSlide];
+  const slide = homeHeroSlides[activeSlide] ?? homeHeroSlides[0];
 
   return (
     <>
@@ -148,10 +186,17 @@ export function HomePage() {
           <span>GUNTUR, ANDHRA PRADESH</span>
         </div>
         <div className="hero-carousel-controls" aria-label="Homepage slides">
-          <button type="button" onClick={() => goToSlide(activeSlide - 1)} aria-label="Previous slide">
+          <button
+            type="button"
+            onClick={() => goToSlide(activeSlide - 1)}
+            aria-label="Previous slide"
+          >
             <ArrowLeft size={16} />
           </button>
-          <span>{String(activeSlide + 1).padStart(2, "0")} / {String(homeHeroSlides.length).padStart(2, "0")}</span>
+          <span>
+            {String(activeSlide + 1).padStart(2, "0")} /{" "}
+            {String(homeHeroSlides.length).padStart(2, "0")}
+          </span>
           <button type="button" onClick={() => goToSlide(activeSlide + 1)} aria-label="Next slide">
             <ArrowRight size={16} />
           </button>
@@ -194,16 +239,28 @@ export function HomePage() {
         <div className="page-width amenities-editorial">
           <div className="amenities-editorial-copy" data-scroll-reveal>
             <p className="eyebrow">EXCEPTIONAL, EVERY DAY</p>
-            <h2>The art of<br /><em>club living.</em></h2>
+            <h2>
+              The art of
+              <br />
+              <em>club living.</em>
+            </h2>
             <p className="amenities-editorial-description">
               From sport and wellness to dining, family time and memorable celebrations, discover
               the spaces that make Guntur Club feel like your own.
             </p>
             <div className="amenities-icon-rail" aria-label="Club amenity categories">
-              <span title="Sports & leisure"><Trophy size={21} /></span>
-              <span title="Dining & togetherness"><Utensils size={21} /></span>
-              <span title="Stay & celebrate"><BedDouble size={21} /></span>
-              <span title="Family & fellowship"><Sparkles size={21} /></span>
+              <span title="Sports & leisure">
+                <Trophy size={21} />
+              </span>
+              <span title="Dining & togetherness">
+                <Utensils size={21} />
+              </span>
+              <span title="Stay & celebrate">
+                <BedDouble size={21} />
+              </span>
+              <span title="Family & fellowship">
+                <Sparkles size={21} />
+              </span>
             </div>
             <Link to="/amenities" className="amenities-editorial-link">
               Explore all amenities
@@ -215,17 +272,25 @@ export function HomePage() {
               <img src={photos.pool} alt="Swimming pool at Guntur Club" loading="lazy" />
               <span>Wellness & leisure</span>
             </Link>
-            <Link to="/amenities" className="amenity-mosaic-tile amenity-mosaic-gold">Sports &<br />recreation</Link>
+            <Link to="/amenities" className="amenity-mosaic-tile amenity-mosaic-gold">
+              Sports &<br />
+              recreation
+            </Link>
             <Link to="/amenities" className="amenity-mosaic-tile amenity-mosaic-image">
               <img src={photos.dining} alt="Dining at Guntur Club" loading="lazy" />
               <span>Dining & hospitality</span>
             </Link>
-            <Link to="/amenities" className="amenity-mosaic-tile amenity-mosaic-olive">GC Pavilion</Link>
+            <Link to="/amenities" className="amenity-mosaic-tile amenity-mosaic-olive">
+              GC Pavilion
+            </Link>
             <Link to="/stay-celebrate" className="amenity-mosaic-tile amenity-mosaic-image">
               <img src={photos.hall} alt="Function hall at Guntur Club" loading="lazy" />
               <span>Stay & celebrate</span>
             </Link>
-            <Link to="/amenities" className="amenity-mosaic-tile amenity-mosaic-olive">Family &<br />fellowship</Link>
+            <Link to="/amenities" className="amenity-mosaic-tile amenity-mosaic-olive">
+              Family &<br />
+              fellowship
+            </Link>
           </div>
         </div>
       </section>
@@ -329,7 +394,7 @@ function AnimatedStat({ value, suffix, label }: { value: number; suffix: string;
     let frame = 0;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (!entry.isIntersecting) return;
+        if (!entry?.isIntersecting) return;
         const startedAt = performance.now();
         const duration = 1400;
 
@@ -391,12 +456,13 @@ export function HeritagePage() {
           </div>
           <div className="welcome-copy">
             <p>
-              Guntur Club is a community built around fellowship, recreation and warm hospitality. Set
-              across a three-acre campus, the club brings together over 1,700 distinguished members.
+              Guntur Club is a community built around fellowship, recreation and warm hospitality.
+              Set across a three-acre campus, the club brings together over 1,700 distinguished
+              members.
             </p>
             <p>
-              From sports and fitness to dining, family gatherings and celebrations, our spaces bring
-              generations together through shared interests and lasting connections.
+              From sports and fitness to dining, family gatherings and celebrations, our spaces
+              bring generations together through shared interests and lasting connections.
             </p>
           </div>
         </div>
