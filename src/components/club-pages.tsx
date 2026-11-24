@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useHomeNavigationVersion } from "./club-navigation-context";
 import { useContact } from "./club-shell";
 import { ContactForm } from "./contact-form";
 import { photos, amenities, address } from "@/lib/club";
@@ -106,8 +107,13 @@ const homeHeroSlides = [
 
 export function HomePage() {
   const contact = useContact();
+  const homeNavigationVersion = useHomeNavigationVersion();
   const heroRef = useRef<HTMLElement>(null);
   const [activeSlide, setActiveSlide] = useState(0);
+
+  useEffect(() => {
+    setActiveSlide(0);
+  }, [homeNavigationVersion]);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;

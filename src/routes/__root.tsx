@@ -123,6 +123,17 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    const navigationEntry = performance
+      .getEntriesByType("navigation")
+      .find((entry): entry is PerformanceNavigationTiming => entry.entryType === "navigation");
+
+    if (navigationEntry?.type === "reload" && router.state.location.pathname !== "/") {
+      void router.navigate({ to: "/", replace: true });
+    }
+  }, [router]);
 
   return (
     <QueryClientProvider client={queryClient}>

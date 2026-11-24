@@ -3,6 +3,7 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { Menu, X, ArrowUpRight, Phone, Mail, MapPin, Download } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Button } from "@/components/ui/button";
+import { HomeNavigationContext } from "./club-navigation-context";
 import { ContactForm } from "./contact-form";
 import { photos, address, brochureUrl, clubLogo } from "@/lib/club";
 const ContactContext = createContext(() => {});
@@ -19,6 +20,7 @@ const navigation = [
 export function ClubShell({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const [menu, setMenu] = useState(false);
+  const [homeNavigationVersion, setHomeNavigationVersion] = useState(0);
   const location = useLocation();
   useEffect(() => {
     const timer = window.setTimeout(() => setOpen(true), 2400);
@@ -92,7 +94,12 @@ export function ClubShell({ children }: { children: ReactNode }) {
         </a>
       </div>
       <header className="site-header">
-        <Link to="/" className="brand" aria-label="Guntur Club home">
+        <Link
+          to="/"
+          className="brand"
+          aria-label="Guntur Club home"
+          onClick={() => setHomeNavigationVersion((version) => version + 1)}
+        >
           <img className="brand-logo" src={clubLogo} alt="Guntur Club — established 1929" />
         </Link>
         <nav className={menu ? "main-nav is-open" : "main-nav"} aria-label="Main navigation">
@@ -121,7 +128,11 @@ export function ClubShell({ children }: { children: ReactNode }) {
           {menu ? <X /> : <Menu />}
         </Button>
       </header>
-      <main>{children}</main>
+      <main>
+        <HomeNavigationContext.Provider value={homeNavigationVersion}>
+          {children}
+        </HomeNavigationContext.Provider>
+      </main>
       <section className="contact-band">
         <div>
           <p className="eyebrow">YOUR NEXT CHAPTER STARTS HERE</p>
@@ -135,7 +146,12 @@ export function ClubShell({ children }: { children: ReactNode }) {
       <footer className="site-footer">
         <div className="footer-top">
           <div>
-            <Link to="/" className="footer-brand" aria-label="Guntur Club home">
+            <Link
+              to="/"
+              className="footer-brand"
+              aria-label="Guntur Club home"
+              onClick={() => setHomeNavigationVersion((version) => version + 1)}
+            >
               <img className="footer-logo" src={clubLogo} alt="Guntur Club — established 1929" />
             </Link>
             <p>Prestige. Fellowship. A way of life.</p>
